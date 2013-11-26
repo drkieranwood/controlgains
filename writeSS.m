@@ -44,7 +44,7 @@ fprintf(fd,'%d\n',numInp);
 fprintf(fd,'%d\n',numOut);
 
 %Write the sample rate.
-fprintf(fd,'%10.5f\n',SSSYS.Ts);
+fprintf(fd,'%20.10f\n',SSSYS.Ts);
 
 %Work through the A matrix adding the values to file. This is in row order
 %(i.e. first row, second row, third row, ...)
