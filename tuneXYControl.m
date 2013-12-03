@@ -135,7 +135,7 @@ RE = measuNoise*measuNoise;
 
 %State and input weightings (jerk, accel, velocity, position) 1/(maxdev^2)
 QR = zeros(kl(AD),kl(AD));
-QR(1,1) = 1/(10.0^2);
+QR(1,1) = 1/(1.0^2);
 QR(2,2) = 1/(1.0^2);
 QR(3,3) = 1/(1.0^2);
 QR(4,4) = 1/(0.02^2);
