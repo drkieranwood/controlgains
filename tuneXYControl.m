@@ -16,7 +16,7 @@ ptam_on = 0;       %changing this to 1 adds extra delay and slightly more measur
 wn   = 7.27;
 zeta = 0.542;
 kc   = 0.532*9.81;
-delay = 0.00 + delayHd;
+delay = 0.08 + delayHd;
 if ptam_on
     delay = delay + 0.14;
 end
@@ -166,9 +166,9 @@ ssh2 = ss(h2AA,h2BB,h2CC,h2DD,sampleTs);
 %=============================================
 % Test closed loop step response
 %=============================================
-if 0
-    closedLoop1 = feedback(series(reg1,SSD),-1);
-    closedLoop2 = feedback(series(reg2,SSD),-1);
+if 1
+    closedLoop1 = feedback(series(reg1,SSD),1,+1);
+    closedLoop2 = feedback(series(reg2,SSD),1,+1);
     h2 = figure('name','Closed Loop');
     hold on;grid on;
     TT = 0:sampleTs:10;
@@ -186,6 +186,7 @@ Kc = dlqr(SSD.a,SSD.b,QR,RR);
 Lc1 = dlqe(Ad,eye(length(Ad)),Cd,Bd*inputNoise*inputNoise*Bd',RE)
 Lc2 = dlqe(Ad,Bd,Cd,inputNoise*inputNoise,RE)
 
+
 %Compare the two state-space systems. Should be a small number.
 ctrlcomp = sum(sum(reg1.a-reg2.a)) + sum(sum(reg1.b-reg2.b)) + sum(sum(reg1.c-reg2.c)) + sum(sum(reg1.d-reg2.d))
 
@@ -195,7 +196,7 @@ matErrB=1.0;
 matErrC=1.0;
 stepDist = 0.1;
 sim('testXY',12);
-figure('name','Step Closed Loop Sim');
+figure('name','Step Closed Loop Sim.');
 ax1 = subplot(2,1,1);hold on;
 plot(closedLoopSim.time,closedLoopSim.signals.values(:,1),'-r');
 ax2 = subplot(2,1,2);hold on;
@@ -206,8 +207,10 @@ plot(closedLoopSimInp.time,closedLoopSimInp.signals.values(:,1),'-r');
 
 
 
+
 %Write gains to file
 writeRedord(Ad,Bd1,Bd2,Cd,n,sampleTs,Kc,Lc1,'redordX');
+writeSS(reg1,'controlX');
 
 
 
