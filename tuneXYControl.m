@@ -6,7 +6,7 @@ close all;
 
 %Setup for control system
 delayHd  = 0.0;
-sampleTs = 0.2;
+sampleTs = 0.1;
 ptam_on = 0;       %changing this to 1 adds extra delay and slightly more measurement noise.
 
 %Best parameters from the step responses.
@@ -16,7 +16,7 @@ ptam_on = 0;       %changing this to 1 adds extra delay and slightly more measur
 wn   = 7.27;
 zeta = 0.542;
 kc   = 0.532*9.81;
-delay = 0.08 + delayHd;
+delay = 0.00 + delayHd;
 if ptam_on
     delay = delay + 0.14;
 end
@@ -135,7 +135,7 @@ RE = measuNoise*measuNoise;
 %State and input weightings (jerk, accel, velocity, position) 1/(maxdev^2)
 QR = zeros(kl(AD),kl(AD));
 QR(1,1) = 1/(1000^2);
-QR(2,2) = 1/(0.1^2);
+QR(2,2) = 1/(1.0^2);
 QR(3,3) = 1/(0.1^2);
 QR(4,4) = 1/(0.01^2);
 RR = 1/(0.37^2);
@@ -188,7 +188,23 @@ Lc2 = dlqe(Ad,Bd,Cd,inputNoise*inputNoise,RE)
 %Compare the two state-space systems. Should be a small number.
 ctrlcomp = sum(sum(reg1.a-reg2.a)) + sum(sum(reg1.b-reg2.b)) + sum(sum(reg1.c-reg2.c)) + sum(sum(reg1.d-reg2.d))
 
-sim('testXY',6);
-figure('name','Step Closed Loop Sim');hold on;
+%Simulate in Simulink
+stepDist = 0.1;
+sim('testXY',12);
+figure('name','Step Closed Loop Sim');
+ax1 = subplot(2,1,1);hold on;
 plot(closedLoopSim.time,closedLoopSim.signals.values(:,1),'-r');
+ax2 = subplot(2,1,2);hold on;
+plot(closedLoopSimInp.time,closedLoopSimInp.signals.values(:,1),'-r');
+
+%Simulate in code here.
+
+
+
+
+%Write gains to file
+writeRedord(Ad,Bd1,Bd2,Cd,n,sampleTs,Kc,Lc1,'redordX')
+
+
+
 
