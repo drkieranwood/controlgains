@@ -122,7 +122,7 @@ linkaxes([ax1 ax2 ax3],'x');
 % Cost and noise (tuning matrices)
 %=============================================
 %Noise standard distributions
-inputNoise = 0.01;
+inputNoise = 0.001;
 if ptam_on
     measuNoise = sqrt(0.0039);
 else
