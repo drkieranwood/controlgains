@@ -16,7 +16,7 @@ ptam_on = 0;       %changing this to 1 adds extra delay and slightly more measur
 wn   = 7.27;
 zeta = 0.542;
 kc   = 0.532*9.81;
-delay = 0.08 + delayHd;
+delay = 0.00 + delayHd;
 if ptam_on
     delay = delay + 0.14;
 end
@@ -122,7 +122,7 @@ linkaxes([ax1 ax2 ax3],'x');
 % Cost and noise (tuning matrices)
 %=============================================
 %Noise standard distributions
-inputNoise = 0.001;
+inputNoise = 0.01;
 if ptam_on
     measuNoise = sqrt(0.0039);
 else
@@ -135,10 +135,10 @@ RE = measuNoise*measuNoise;
 
 %State and input weightings (jerk, accel, velocity, position) 1/(maxdev^2)
 QR = zeros(kl(AD),kl(AD));
-QR(1,1) = 1/(1.0^2);
+QR(1,1) = 1/(10.0^2);
 QR(2,2) = 1/(1.0^2);
-QR(3,3) = 1/(0.1^2);
-QR(4,4) = 1/(0.01^2);
+QR(3,3) = 1/(1.0^2);
+QR(4,4) = 1/(0.02^2);
 RR = 1/(0.37^2);
 
 QXU = blkdiag(QR,RR);
@@ -183,27 +183,86 @@ end
 
 %Create the LQR and LQE gains
 Kc = dlqr(SSD.a,SSD.b,QR,RR);
-Lc1 = dlqe(Ad,eye(length(Ad)),Cd,Bd*inputNoise*inputNoise*Bd',RE)
-Lc2 = dlqe(Ad,Bd,Cd,inputNoise*inputNoise,RE)
+Lc1 = dlqe(Ad,eye(length(Ad)),Cd,Bd*inputNoise*inputNoise*Bd',RE);
+Lc2 = dlqe(Ad,Bd,Cd,inputNoise*inputNoise,RE);
 
 
 %Compare the two state-space systems. Should be a small number.
 ctrlcomp = sum(sum(reg1.a-reg2.a)) + sum(sum(reg1.b-reg2.b)) + sum(sum(reg1.c-reg2.c)) + sum(sum(reg1.d-reg2.d))
 
+
+%==================================
+%==================================
 %Simulate in Simulink
 matErrA=1.0;
 matErrB=1.0;
 matErrC=1.0;
-stepDist = 0.1;
+stepDist = 0.2;
 sim('testXY',12);
-figure('name','Step Closed Loop Sim.');
+h363 = figure('name','Step Closed Loop Sim.');
 ax1 = subplot(2,1,1);hold on;
 plot(closedLoopSim.time,closedLoopSim.signals.values(:,1),'-r');
 ax2 = subplot(2,1,2);hold on;
 plot(closedLoopSimInp.time,closedLoopSimInp.signals.values(:,1),'-r');
 
-%Simulate in code here.
 
+%==================================
+%==================================
+%Simulate in code here.
+%Need a system model to represent the ground truth, and the input reference
+%positions.
+clear XX YY UU TT;
+ssTruth = SSD;
+TT=-sampleTs:sampleTs:12;
+RR=zeros(length(AD),length(TT));
+RR(4,:) = stepDist;
+XX(:,1:2) = zeros(kl(AD),2);
+YY(:,1:2) = zeros(1,2);
+UU(:,1:2) = zeros(1,2);
+
+%Need estimator states
+corEst(:,1:2)  = zeros(kl(Ad),2);
+predEst(:,1:2) = zeros(kl(Ad),2); 
+delayStore(:,1) = zeros(n+2,1);
+
+
+
+%Run a simulation for all time
+for ii=2:1:(length(TT))
+    %At ii=2 -> TT(2) = 0.0
+    
+    %Move real state along using previous state and input. Also create the
+    %output measurement.
+    XX(:,ii) = AD*XX(:,ii-1) + BD*UU(ii-1);
+    YY(:,ii) = CD*XX(:,ii);
+    
+    %Update prediction from previous state
+    predEst(:,ii) = Ad*corEst(:,ii-1) + Bd1*delayStore(1) + Bd2*delayStore(2);
+    
+    %Correct with new measurement
+    corEst(:,ii) = predEst(:,ii) + Lc1*(YY(:,ii)-Cd*predEst(:,ii));
+    
+    %Create new control. First augment states, then find error.
+    xAug = [corEst(:,ii); delayStore(1:n+1)];
+    UU(:,ii) = Kc*(RR(:,ii) - xAug);
+    if(UU(:,ii) > 0.37)
+        UU(:,ii) = 0.37;
+    end
+    if (UU(:,ii)<-0.37)
+        UU(:,ii) = -0.37;
+    end
+    
+    %Update the delay storage
+    delayStore(1:n+1) = delayStore(2:n+2);
+    delayStore(n+2) = UU(:,ii);
+    
+end
+
+figure(h363);
+subplot(2,1,1);hold on;
+plot(TT,XX(4,:),'-g');
+subplot(2,1,2);hold on;
+plot(TT,UU,'-g');
 
 
 
@@ -212,6 +271,7 @@ plot(closedLoopSimInp.time,closedLoopSimInp.signals.values(:,1),'-r');
 writeRedord(Ad,Bd1,Bd2,Cd,n,sampleTs,Kc,Lc1,'redordX');
 writeSS(reg1,'controlX');
 
-
+Lc1
+Kc
 
 
