@@ -117,6 +117,7 @@ linkaxes([ax1 ax2 ax3],'x');
 %been created. Hence create the control.
 
 
+
 %=============================================
 % Cost and noise (tuning matrices)
 %=============================================
@@ -134,7 +135,7 @@ RE = measuNoise*measuNoise;
 
 %State and input weightings (jerk, accel, velocity, position) 1/(maxdev^2)
 QR = zeros(kl(AD),kl(AD));
-QR(1,1) = 1/(1000^2);
+QR(1,1) = 1/(1.0^2);
 QR(2,2) = 1/(1.0^2);
 QR(3,3) = 1/(0.1^2);
 QR(4,4) = 1/(0.01^2);
@@ -189,6 +190,9 @@ Lc2 = dlqe(Ad,Bd,Cd,inputNoise*inputNoise,RE)
 ctrlcomp = sum(sum(reg1.a-reg2.a)) + sum(sum(reg1.b-reg2.b)) + sum(sum(reg1.c-reg2.c)) + sum(sum(reg1.d-reg2.d))
 
 %Simulate in Simulink
+matErrA=1.0;
+matErrB=1.0;
+matErrC=1.0;
 stepDist = 0.1;
 sim('testXY',12);
 figure('name','Step Closed Loop Sim');
@@ -203,7 +207,7 @@ plot(closedLoopSimInp.time,closedLoopSimInp.signals.values(:,1),'-r');
 
 
 %Write gains to file
-writeRedord(Ad,Bd1,Bd2,Cd,n,sampleTs,Kc,Lc1,'redordX')
+writeRedord(Ad,Bd1,Bd2,Cd,n,sampleTs,Kc,Lc1,'redordX');
 
 
 

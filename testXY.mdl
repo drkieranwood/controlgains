@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.42"
+    ComputedModelVersion    "1.43"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -38,9 +38,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "user"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Dec 03 12:35:27 2013"
+  LastModifiedDate	  "Tue Dec 03 17:11:49 2013"
   RTWModifiedTimeStamp	  307937578
-  ModelVersionFormat	  "1.%<AutoIncrement:42>"
+  ModelVersionFormat	  "1.%<AutoIncrement:43>"
   ConfigurationManager	  "None"
   SampleTimeColors	  on
   SampleTimeAnnotations	  off
@@ -1169,9 +1169,9 @@ Model {
       Name		      "State-Space"
       SID		      "18"
       Position		      [570, 148, 630, 182]
-      A			      "ssc.a"
-      B			      "ssc.b"
-      C			      "ssc.c"
+      A			      "matErrA*ssc.a"
+      B			      "matErrB*ssc.b"
+      C			      "matErrC*ssc.c"
       D			      "ssc.d"
     }
     Block {
