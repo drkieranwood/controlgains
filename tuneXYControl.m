@@ -8,7 +8,7 @@ clear Kc Lc1 Lc2;
 clear Ad Bd Bd1 Bd2 Cd AD BD CD DD;
 
 %Setup for control system
-delayHd  =0.14;
+delayHd  =0.0;
 sampleTs = 0.1;
 ptam_on = 0;       %changing this to 1 adds extra delay and slightly more measurement noise.
 
@@ -131,7 +131,7 @@ if ptam_on
     measuNoise = 0.05;
 else
     measuNoise = 0.01;   %i.e. using Vicon so very accurate
-    measuNoise = 0.1;    %i.e. using PTAM so less accurate
+%     measuNoise = 0.1;    %i.e. using PTAM so less accurate
 end
 %Convert to covariance matrices
 Bdnoise = [Bd ; zeros(n+1,1)];
