@@ -5,6 +5,7 @@ close all;
 %=============================================
 
 clear Kc Lc1 Lc2;
+clear Ad Bd Bd1 Bd2 Cd AD BD CD DD;
 
 %Setup for control system
 delayHd  = 0.0;
@@ -200,6 +201,7 @@ matErrA=1.0;
 matErrB=1.0;
 matErrC=1.0;
 stepDist = 0.1;
+disturbMag = 0.3;
 sim('testXY',12);
 h363 = figure('name','Step Closed Loop Sim.');
 ax1 = subplot(3,1,1);hold on;
@@ -275,7 +277,7 @@ plot(TT(1:ii),corEst(3,:),'-g');
 
 %Write gains to file
 writeRedord(Ad,Bd1,Bd2,Cd,n,sampleTs,Kc,Lc1,'redordZ');
-writeSS(reg1,'controlZ');
+% writeSS(reg1,'controlZ');
 
 Lc1
 Kc

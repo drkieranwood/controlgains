@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.55"
+    ComputedModelVersion    "1.62"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -38,9 +38,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "user"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Wed Dec 04 12:59:43 2013"
+  LastModifiedDate	  "Wed Dec 04 14:41:01 2013"
   RTWModifiedTimeStamp	  307937578
-  ModelVersionFormat	  "1.%<AutoIncrement:55>"
+  ModelVersionFormat	  "1.%<AutoIncrement:62>"
   ConfigurationManager	  "None"
   SampleTimeColors	  on
   SampleTimeAnnotations	  off
@@ -126,7 +126,7 @@ Model {
 	  StartTime		  "0.0"
 	  StopTime		  "10.0"
 	  AbsTol		  "auto"
-	  FixedStep		  "sampleTs/100"
+	  FixedStep		  "sampleTs/1000"
 	  InitialStep		  "auto"
 	  MaxNumMinSteps	  "-1"
 	  MaxOrder		  5
@@ -619,7 +619,7 @@ Model {
       Name		      "Configuration"
       ExtraOptions	      "-aGenerateTraceInfo=0 -aIgnoreTestpoints=0 "
       CurrentDlgPage	      "Solver"
-      ConfigPrmDlgPosition     [ 472, 45, 1448, 903 ] 
+      ConfigPrmDlgPosition     [ 512, 100, 1409, 896 ] 
     }
     PropName		    "ConfigurationSets"
   }
@@ -885,7 +885,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "51"
+    SIDHighWatermark	    "52"
     Block {
       BlockType		      Gain
       Name		      "Ad"
@@ -1107,7 +1107,7 @@ Model {
       Position		      [460, 54, 490, 86]
       ZOrder		      -13
       PulseType		      "Time based"
-      Amplitude		      "-stepDist*3.0"
+      Amplitude		      "-disturbMag"
       Period		      "100"
       PulseWidth	      "0.1"
       PhaseDelay	      "5.0"
@@ -1117,6 +1117,7 @@ Model {
       Name		      "Rate Transition"
       SID		      "17"
       Position		      [375, 144, 415, 186]
+      Integrity		      off
       Deterministic	      off
     }
     Block {
@@ -1124,6 +1125,7 @@ Model {
       Name		      "Rate Transition1"
       SID		      "19"
       Position		      [755, 144, 795, 186]
+      Integrity		      off
       Deterministic	      off
       OutPortSampleTime	      "sampleTs"
     }
