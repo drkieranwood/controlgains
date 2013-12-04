@@ -128,9 +128,10 @@ linkaxes([ax1 ax2 ax3],'x');
 %Noise standard distributions
 inputNoise = 0.1;
 if ptam_on
-    measuNoise = sqrt(0.0039);
+    measuNoise = 0.05;
 else
     measuNoise = 0.01;   %i.e. using Vicon so very accurate
+    measuNoise = 0.1;    %i.e. using PTAM so less accurate
 end
 %Convert to covariance matrices
 Bdnoise = [Bd ; zeros(n+1,1)];
