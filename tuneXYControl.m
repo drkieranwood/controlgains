@@ -16,7 +16,7 @@ ptam_on = 0;       %changing this to 1 adds extra delay and slightly more measur
 wn   = 7.27;
 zeta = 0.542;
 kc   = 0.532*9.81;
-delay = 0.00 + delayHd;
+delay = 0.08 + delayHd;
 if ptam_on
     delay = delay + 0.14;
 end
@@ -197,12 +197,12 @@ ctrlcomp = sum(sum(reg1.a-reg2.a)) + sum(sum(reg1.b-reg2.b)) + sum(sum(reg1.c-re
 matErrA=1.0;
 matErrB=1.0;
 matErrC=1.0;
-stepDist = 0.2;
+stepDist = 0.01;
 sim('testXY',12);
 h363 = figure('name','Step Closed Loop Sim.');
-ax1 = subplot(2,1,1);hold on;
+ax1 = subplot(3,1,1);hold on;
 plot(closedLoopSim.time,closedLoopSim.signals.values(:,1),'-r');
-ax2 = subplot(2,1,2);hold on;
+ax2 = subplot(3,1,2);hold on;
 plot(closedLoopSimInp.time,closedLoopSimInp.signals.values(:,1),'-r');
 
 
@@ -211,59 +211,71 @@ plot(closedLoopSimInp.time,closedLoopSimInp.signals.values(:,1),'-r');
 %Simulate in code here.
 %Need a system model to represent the ground truth, and the input reference
 %positions.
-clear XX YY UU TT;
+clear XX YY UU RR TT corEst predEst delayStore previnp;
 ssTruth = SSD;
-TT=-sampleTs:sampleTs:12;
+TT=0:sampleTs:12;
 RR=zeros(length(AD),length(TT));
 RR(4,:) = stepDist;
-XX(:,1:2) = zeros(kl(AD),2);
-YY(:,1:2) = zeros(1,2);
-UU(:,1:2) = zeros(1,2);
+XX(:,1:1) = zeros(kl(AD),1);
+YY(:,1:1) = zeros(1,1);
+UU(:,1:1) = zeros(1,1);
 
-%Need estimator states
-corEst(:,1:2)  = zeros(kl(Ad),2);
-predEst(:,1:2) = zeros(kl(Ad),2); 
+%Need estimator states.
+corEst(:,1)  = zeros(kl(Ad),1);
+predEst(:,1) = zeros(kl(Ad),1); 
 delayStore(:,1) = zeros(n+2,1);
-
+previnp = 0.0;
 
 
 %Run a simulation for all time
-for ii=2:1:(length(TT))
-    %At ii=2 -> TT(2) = 0.0
-    
-    %Move real state along using previous state and input. Also create the
-    %output measurement.
-    XX(:,ii) = AD*XX(:,ii-1) + BD*UU(ii-1);
-    YY(:,ii) = CD*XX(:,ii);
-    
-    %Update prediction from previous state
-    predEst(:,ii) = Ad*corEst(:,ii-1) + Bd1*delayStore(1) + Bd2*delayStore(2);
-    
-    %Correct with new measurement
-    corEst(:,ii) = predEst(:,ii) + Lc1*(YY(:,ii)-Cd*predEst(:,ii));
+for ii=1:1:(length(TT))
+    %At ii=1 -> TT=0
+   
+    %Correct the state prediction to form the current state estimate used
+    %for control.
+    corEst(:,ii) = predEst(:,ii) + Lc2*( YY(:,ii) - Cd*predEst(:,ii) );
     
     %Create new control. First augment states, then find error.
-    xAug = [corEst(:,ii); delayStore(1:n+1)];
+    %The augmented state consists of the estimate and the previous n+1
+    %inputs. The newly created control does not feature in order to avoid 
+    %a loop.
+    xAug = [corEst(:,ii) ; previnp];
     UU(:,ii) = Kc*(RR(:,ii) - xAug);
     if(UU(:,ii) > 0.37)
         UU(:,ii) = 0.37;
     end
-    if (UU(:,ii)<-0.37)
+    if (UU(:,ii)< -0.37)
         UU(:,ii) = -0.37;
     end
     
-    %Update the delay storage
+    %Now the control is found use it to move the real system state along.
+    %Also create the measurement output for the future.
+    XX(:,ii+1) = AD*XX(:,ii) + BD*UU(:,ii);
+    YY(:,ii+1) = CD*XX(:,ii);
+    
+    %Predict the future state using the stored inputs
+    predEst(:,ii+1) = Ad*corEst(:,ii) + Bd1*previnp + Bd2*UU(:,ii);
+    
+    %Update the delay storage. The new control is used and added to the
+    %bottom.
+    previnp = UU(:,ii);
+    
     delayStore(1:n+1) = delayStore(2:n+2);
     delayStore(n+2) = UU(:,ii);
+    
+
+    
+
     
 end
 
 figure(h363);
-subplot(2,1,1);hold on;
-plot(TT,XX(4,:),'-g');
-subplot(2,1,2);hold on;
-plot(TT,UU,'-g');
-
+subplot(3,1,1);hold on;
+plot(TT(1:ii),XX(4,1:end-1),'-g');
+subplot(3,1,2);hold on;
+plot(TT(1:ii),UU,'-g');
+subplot(3,1,3);hold on;
+plot(TT(1:ii),corEst(4,:),'-g');
 
 
 

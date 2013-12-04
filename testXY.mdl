@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.44"
+    ComputedModelVersion    "1.52"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -38,9 +38,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "user"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Dec 03 18:47:58 2013"
+  LastModifiedDate	  "Wed Dec 04 00:01:45 2013"
   RTWModifiedTimeStamp	  307937578
-  ModelVersionFormat	  "1.%<AutoIncrement:44>"
+  ModelVersionFormat	  "1.%<AutoIncrement:52>"
   ConfigurationManager	  "None"
   SampleTimeColors	  on
   SampleTimeAnnotations	  off
@@ -617,8 +617,9 @@ Model {
 	PropName		"Components"
       }
       Name		      "Configuration"
+      ExtraOptions	      "-aGenerateTraceInfo=0 -aIgnoreTestpoints=0 "
       CurrentDlgPage	      "Solver"
-      ConfigPrmDlgPosition     [ 496, 135, 1424, 879 ] 
+      ConfigPrmDlgPosition     [ 472, 45, 1448, 903 ] 
     }
     PropName		    "ConfigurationSets"
   }
@@ -884,7 +885,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "49"
+    SIDHighWatermark	    "50"
     Block {
       BlockType		      Gain
       Name		      "Ad"
@@ -1135,6 +1136,7 @@ Model {
       InputPortMap	      "u0"
       UpperLimit	      "0.37"
       LowerLimit	      "-0.37"
+      LinearizeAsGain	      off
     }
     Block {
       BlockType		      Scope
@@ -1152,7 +1154,7 @@ Model {
       }
       List {
 	ListType		ScopeGraphics
-	FigureColor		"[0.5 0.5 0.5]"
+	FigureColor		"[0.501960784313725 0.501960784313725 0.501960784313725]"
 	AxesColor		"[0 0 0]"
 	AxesTickColor		"[1 1 1]"
 	LineColors		"[1 1 0;1 0 1;0 1 1;1 0 0;0 1 0;0 0 1]"
@@ -1162,6 +1164,7 @@ Model {
       }
       ShowLegends	      off
       DataFormat	      "StructureWithTime"
+      LimitDataPoints	      off
       SampleTime	      "0"
     }
     Block {
