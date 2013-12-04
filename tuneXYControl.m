@@ -5,7 +5,7 @@ close all;
 %=============================================
 
 %Setup for control system
-delayHd  = 0.0;
+delayHd  = 0.5;
 sampleTs = 0.1;
 ptam_on = 0;       %changing this to 1 adds extra delay and slightly more measurement noise.
 
@@ -122,7 +122,7 @@ linkaxes([ax1 ax2 ax3],'x');
 % Cost and noise (tuning matrices)
 %=============================================
 %Noise standard distributions
-inputNoise = 0.01;
+inputNoise = 0.1;
 if ptam_on
     measuNoise = sqrt(0.0039);
 else
@@ -211,7 +211,7 @@ plot(closedLoopSimInp.time,closedLoopSimInp.signals.values(:,1),'-r');
 %Simulate in code here.
 %Need a system model to represent the ground truth, and the input reference
 %positions.
-clear XX YY UU RR TT corEst predEst delayStore previnp;
+clear XX YY UU RR TT corEst predEst delayStore;
 ssTruth = SSD;
 TT=0:sampleTs:12;
 RR=zeros(length(AD),length(TT));
@@ -223,9 +223,7 @@ UU(:,1:1) = zeros(1,1);
 %Need estimator states.
 corEst(:,1)  = zeros(kl(Ad),1);
 predEst(:,1) = zeros(kl(Ad),1); 
-delayStore(:,1) = zeros(n+2,1);
-previnp = 0.0;
-
+delayStore(:,1) = zeros(n+2,1)'
 
 %Run a simulation for all time
 for ii=1:1:(length(TT))
@@ -239,7 +237,7 @@ for ii=1:1:(length(TT))
     %The augmented state consists of the estimate and the previous n+1
     %inputs. The newly created control does not feature in order to avoid 
     %a loop.
-    xAug = [corEst(:,ii) ; previnp];
+    xAug = [corEst(:,ii) ; delayStore(2:n+2)];
     UU(:,ii) = Kc*(RR(:,ii) - xAug);
     if(UU(:,ii) > 0.37)
         UU(:,ii) = 0.37;
@@ -251,19 +249,15 @@ for ii=1:1:(length(TT))
     %Now the control is found use it to move the real system state along.
     %Also create the measurement output for the future.
     XX(:,ii+1) = AD*XX(:,ii) + BD*UU(:,ii);
-    YY(:,ii+1) = CD*XX(:,ii);
-    
-    %Predict the future state using the stored inputs
-    predEst(:,ii+1) = Ad*corEst(:,ii) + Bd1*previnp + Bd2*UU(:,ii);
+    YY(:,ii+1) = CD*XX(:,ii+1);
     
     %Update the delay storage. The new control is used and added to the
-    %bottom.
-    previnp = UU(:,ii);
-    
+    %bottom.    
     delayStore(1:n+1) = delayStore(2:n+2);
     delayStore(n+2) = UU(:,ii);
     
-
+    %Predict the future state using the stored inputs
+    predEst(:,ii+1) = Ad*corEst(:,ii) + Bd1*delayStore(1) + Bd2*delayStore(2);
     
 
     
