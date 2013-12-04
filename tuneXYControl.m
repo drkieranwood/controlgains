@@ -8,7 +8,7 @@ clear Kc Lc1 Lc2;
 clear Ad Bd Bd1 Bd2 Cd AD BD CD DD;
 
 %Setup for control system
-delayHd  = 0.0;
+delayHd  =0.14;
 sampleTs = 0.1;
 ptam_on = 0;       %changing this to 1 adds extra delay and slightly more measurement noise.
 

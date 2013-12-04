@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.62"
+    ComputedModelVersion    "1.63"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -38,9 +38,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "user"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Wed Dec 04 14:41:01 2013"
+  LastModifiedDate	  "Wed Dec 04 18:35:43 2013"
   RTWModifiedTimeStamp	  307937578
-  ModelVersionFormat	  "1.%<AutoIncrement:62>"
+  ModelVersionFormat	  "1.%<AutoIncrement:63>"
   ConfigurationManager	  "None"
   SampleTimeColors	  on
   SampleTimeAnnotations	  off
@@ -1055,7 +1055,7 @@ Model {
 	  BlockType		  Demux
 	  Name			  "Demux"
 	  SID			  "38"
-	  Ports			  [1, 2]
+	  Ports			  [1, 3]
 	  Position		  [280, 66, 285, 224]
 	  ShowName		  off
 	  Outputs		  "n+2"
@@ -1079,14 +1079,13 @@ Model {
 	Line {
 	  SrcBlock		  "Demux"
 	  SrcPort		  1
-	  Points		  [0, -10]
 	  DstBlock		  "Oldest"
 	  DstPort		  1
 	}
 	Line {
 	  SrcBlock		  "Demux"
 	  SrcPort		  2
-	  Points		  [0, -15]
+	  Points		  [0, 25]
 	  DstBlock		  "2ndOldest"
 	  DstPort		  1
 	}
