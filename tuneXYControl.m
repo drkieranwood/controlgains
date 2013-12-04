@@ -4,8 +4,10 @@ close all;
 % Create system model
 %=============================================
 
+clear Kc Lc1 Lc2;
+
 %Setup for control system
-delayHd  = 0.5;
+delayHd  = 0.0;
 sampleTs = 0.1;
 ptam_on = 0;       %changing this to 1 adds extra delay and slightly more measurement noise.
 
@@ -20,6 +22,7 @@ delay = 0.08 + delayHd;
 if ptam_on
     delay = delay + 0.14;
 end
+minMaxCtrl = 0.37;
 
 
 %Find gd and n
@@ -223,7 +226,7 @@ UU(:,1:1) = zeros(1,1);
 %Need estimator states.
 corEst(:,1)  = zeros(kl(Ad),1);
 predEst(:,1) = zeros(kl(Ad),1); 
-delayStore(:,1) = zeros(n+2,1)'
+delayStore(:,1) = zeros(n+2,1);
 
 %Run a simulation for all time
 for ii=1:1:(length(TT))
@@ -239,11 +242,11 @@ for ii=1:1:(length(TT))
     %a loop.
     xAug = [corEst(:,ii) ; delayStore(2:n+2)];
     UU(:,ii) = Kc*(RR(:,ii) - xAug);
-    if(UU(:,ii) > 0.37)
-        UU(:,ii) = 0.37;
+    if(UU(:,ii) > minMaxCtrl)
+        UU(:,ii) = minMaxCtrl;
     end
-    if (UU(:,ii)< -0.37)
-        UU(:,ii) = -0.37;
+    if (UU(:,ii)< -minMaxCtrl)
+        UU(:,ii) = -minMaxCtrl;
     end
     
     %Now the control is found use it to move the real system state along.

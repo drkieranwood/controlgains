@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.52"
+    ComputedModelVersion    "1.55"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -38,9 +38,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "user"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Wed Dec 04 00:01:45 2013"
+  LastModifiedDate	  "Wed Dec 04 12:59:43 2013"
   RTWModifiedTimeStamp	  307937578
-  ModelVersionFormat	  "1.%<AutoIncrement:52>"
+  ModelVersionFormat	  "1.%<AutoIncrement:55>"
   ConfigurationManager	  "None"
   SampleTimeColors	  on
   SampleTimeAnnotations	  off
@@ -885,7 +885,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "50"
+    SIDHighWatermark	    "51"
     Block {
       BlockType		      Gain
       Name		      "Ad"
@@ -934,8 +934,8 @@ Model {
       BlockType		      Constant
       Name		      "Constant"
       SID		      "10"
-      Position		      [40, 95, 70, 125]
-      Value		      "[0;0;0]"
+      Position		      [40, 100, 70, 130]
+      Value		      "zeros(length(Ad)-1,1)"
     }
     Block {
       BlockType		      Constant
@@ -1056,7 +1056,7 @@ Model {
 	  Name			  "Demux"
 	  SID			  "38"
 	  Ports			  [1, 2]
-	  Position		  [280, 62, 285, 218]
+	  Position		  [280, 66, 285, 224]
 	  ShowName		  off
 	  Outputs		  "n+2"
 	  DisplayOption		  "bar"
@@ -1079,20 +1079,21 @@ Model {
 	Line {
 	  SrcBlock		  "Demux"
 	  SrcPort		  1
-	  Points		  [0, -5]
+	  Points		  [0, -10]
 	  DstBlock		  "Oldest"
 	  DstPort		  1
 	}
 	Line {
 	  SrcBlock		  "Demux"
 	  SrcPort		  2
-	  Points		  [0, -10]
+	  Points		  [0, -15]
 	  DstBlock		  "2ndOldest"
 	  DstPort		  1
 	}
 	Line {
 	  SrcBlock		  "In1"
 	  SrcPort		  1
+	  Points		  [95, 0]
 	  DstBlock		  "Demux"
 	  DstPort		  1
 	}
@@ -1134,8 +1135,8 @@ Model {
       Position		      [265, 150, 295, 180]
       ZOrder		      -15
       InputPortMap	      "u0"
-      UpperLimit	      "0.37"
-      LowerLimit	      "-0.37"
+      UpperLimit	      "minMaxCtrl"
+      LowerLimit	      "-minMaxCtrl"
       LinearizeAsGain	      off
     }
     Block {
@@ -1146,7 +1147,7 @@ Model {
       Position		      [695, 14, 725, 46]
       Floating		      off
       Location		      [20, 71, 607, 529]
-      Open		      off
+      Open		      on
       NumInputPorts	      "1"
       List {
 	ListType		AxesTitles
@@ -1283,7 +1284,7 @@ Model {
     Line {
       SrcBlock		      "Constant"
       SrcPort		      1
-      Points		      [10, 0; 0, 45]
+      Points		      [10, 0; 0, 40]
       DstBlock		      "Mux"
       DstPort		      1
     }
