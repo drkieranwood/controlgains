@@ -130,7 +130,7 @@ inputNoise = 0.1;
 if ptam_on
     measuNoise = sqrt(0.0039);
 else
-    measuNoise = 0.001;   %i.e. using Vicon so very accurate
+    measuNoise = 0.01;   %i.e. using Vicon so very accurate
 end
 %Convert to covariance matrices
 Bdnoise = [Bd ; zeros(n+1,1)];
