@@ -130,7 +130,7 @@ inputNoise = 0.1;
 if ptam_on
     measuNoise = 0.05;
 else
-    measuNoise = 0.01;   %i.e. using Vicon so very accurate
+    measuNoise = 0.1;   %i.e. using Vicon so very accurate
 %     measuNoise = 0.1;    %i.e. using PTAM so less accurate
 end
 %Convert to covariance matrices
@@ -280,7 +280,7 @@ plot(TT(1:ii),corEst(4,:),'-g');
 
 
 %Write gains to file
-writeRedord(Ad,Bd1,Bd2,Cd,n,sampleTs,Kc,Lc1,'redordX');
+writeRedord(Ad,Bd1,Bd2,Cd,n,sampleTs,Kc,Lc1,'redordY');
 % writeSS(reg1,'controlX');
 
 Lc1
